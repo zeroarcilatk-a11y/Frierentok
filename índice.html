@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frieren Meme Token | Live</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:'Orbitron',sans-serif;
+background:#0a0a12;
+color:white;
+text-align:center;
+}
+
+.hero{
+padding:150px 20px;
+background:url('portada.png') center/cover no-repeat;
+position:relative;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+}
+
+.hero-content{
+position:relative;
+z-index:1;
+}
+
+.btn{
+padding:15px 30px;
+background:#00ffe0;
+border:none;
+border-radius:30px;
+font-weight:bold;
+cursor:pointer;
+margin:10px;
+}
+
+.section{
+padding:80px 20px;
+}
+
+.card{
+background:#111827;
+padding:30px;
+border-radius:20px;
+margin:auto;
+max-width:600px;
+box-shadow:0 0 20px rgba(0,255,224,0.3);
+}
+
+h1{color:#00ffe0;}
+h2{color:#00ffe0;}
+
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+<div class="hero-content">
+<h1>FRIEREN MEME TOKEN</h1>
+<p>Live Data Web3 Integration</p>
+
+<button onclick="connectWallet()" class="btn">Conectar Phantom</button>
+<p>Wallet: <span id="walletAddress">No conectada</span></p>
+
+<a href="https://x.com/FrierenMemeToke" target="_blank" class="btn">X Oficial</a>
+<a href="https://t.me/Frierentokenoficial" target="_blank" class="btn">Telegram</a>
+
+</div>
+</section>
+
+<section class="section">
+<h2>Live Token Data</h2>
+
+<div class="card">
+<p>Precio: <span id="price">Cargando...</span></p>
+<p>Liquidez: <span id="liquidity">Cargando...</span></p>
+<p>Volumen 24h: <span id="volume">Cargando...</span></p>
+</div>
+
+</section>
+
+<script>
+
+// =======================
+// PHANTOM CONNECT
+// =======================
+
+async function connectWallet(){
+if(window.solana && window.solana.isPhantom){
+const resp = await window.solana.connect();
+document.getElementById("walletAddress").innerText =
+resp.publicKey.toString().slice(0,4) + "..." +
+resp.publicKey.toString().slice(-4);
+}else{
+alert("Instala Phantom Wallet");
+}
+}
+
+// =======================
+// DEXSCREENER DATA
+// =======================
+
+const CONTRACT = "TU_CONTRACTO_AQUI";
+
+async function fetchDexData(){
+
+try{
+const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${CONTRACT}`);
+const data = await res.json();
+
+const pair = data.pairs[0];
+
+document.getElementById("price").innerText =
+"$" + parseFloat(pair.priceUsd).toFixed(6);
+
+document.getElementById("liquidity").innerText =
+"$" + pair.liquidity.usd.toLocaleString();
+
+document.getElementById("volume").innerText =
+"$" + pair.volume.h24.toLocaleString();
+
+}catch(e){
+console.log("Error Dex:", e);
+}
+
+}
+
+fetchDexData();
+setInterval(fetchDexData, 30000);
+
+</script>
+
+</body>
+</html>
