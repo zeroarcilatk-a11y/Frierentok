@@ -12,7 +12,29 @@
 
 *{margin:0;padding:0;box-sizing:border-box;}
 
-body{
+body{let provider = null;
+
+function getProvider() {
+  if ("solana" in window) {
+    const provider = window.solana;
+    if (provider.isPhantom) {
+      return provider;
+    }
+  }
+  window.open("https://phantom.app/", "_blank");
+}
+
+async function connectWallet() {
+  provider = getProvider();
+  try {
+    const resp = await provider.connect();
+    document.getElementById("walletAddress").innerText =
+      resp.publicKey.toString().slice(0,4) + "..." +
+      resp.publicKey.toString().slice(-4);
+  } catch (err) {
+    console.log(err);
+  }
+}
 font-family:'Orbitron',sans-serif;
 background:#0a0a12;
 color:white;
